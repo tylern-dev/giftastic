@@ -23,7 +23,7 @@ $(document).ready(function(){
             if(btnClicked){
                 btnClicked = btnClicked.replace(/ /g, '+'); //replaces the space with a + for the api search
                 title = btnClicked;
-                queryURL = "http://api.giphy.com/v1/gifs/search?q=" +
+                queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
         title+ "&rating=pg&api_key=3fcca21e51fa4757b14794a0e52c4059&limit=10";
                 ajaxCall()
             }
