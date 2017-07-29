@@ -6,10 +6,10 @@
 
 
 
-var topics = ['Game of Thrones','Silicon Valley','Bob\'s Burgers','Rick and Morty'];
+var topics = ['The Office','Silicon Valley','Bob\'s Burgers','Rick and Morty'];
 var title;
 var queryURL;
-var clearBtnList = false;
+// var clearBtnList = false;
 
 
 $(document).ready(function(){
@@ -17,10 +17,11 @@ $(document).ready(function(){
 
     function retrieveGif(){
         $('button').on('click', function(event){
+            $('.gif-container').empty()
             console.log(event);
             var btnClicked = event.currentTarget.innerText
             if(btnClicked){
-                btnClicked = btnClicked.replace(/ /g, '+');
+                btnClicked = btnClicked.replace(/ /g, '+'); //replaces the space with a + for the api search
                 title = btnClicked;
                 queryURL = "http://api.giphy.com/v1/gifs/search?q=" +
         title+ "&api_key=3fcca21e51fa4757b14794a0e52c4059&limit=10";
@@ -36,8 +37,9 @@ $(document).ready(function(){
             var item = $('#title-input').val().trim();
             console.log(item)
             topics.push(item);
-            clearBtnList = true;
+            // clearBtnList = true;
             buttonBuild()
+            retrieveGif()
         })
     }
 
@@ -52,24 +54,33 @@ $(document).ready(function(){
         });
     }
 
+    //creates the gifs and gives them the appropriate attributes and classes
     function gifBuild(r){
+       
         for(var i=0; i<r.data.length; i++){
             var gifContainer = $('.gif-container');
+            var gifHolder = $('<div class="gif-holder">');
             var gifRating = $('<p>');
-            var gifImg = $('<img>');
-            gifRating.text('Rated: '+r.data[i].rating)
-            gifContainer.append(gifRating);
-            gifRating.append(gifImg);
-            gifImg.attr('src',r.data[i].images.fixed_height.url)
-            gifImg.appendTo(gifContainer);
-
-        }
+            var gifImg = $('<img class="gif-img"></div>');
+            
+            gifContainer.append(gifHolder);
+            gifHolder.append(gifRating);
+            gifRating.text('Rated: '+r.data[i].rating);
+            gifHolder.append(gifImg);
+            gifHolder.append('</div>');
+            gifImg.attr('src', r.data[i].images.fixed_height_still.url)
+            gifImg.attr('data-still',r.data[i].images.fixed_height_still.url);
+            gifImg.attr('data-animate', r.data[i].images.fixed_height.url);
+            gifImg.attr('data-state', 'still')
+        }            
     }
 
+
+    //builds the buttons at the top of the screen
     function buttonBuild(){
-        if(clearBtnList){
-            $('.topic-buttons').clear();
-        }
+        //clears the buttons and then appends the new button. otherwise it would duplicate buttons
+        $('.topic-buttons').empty();
+       
         for(var i=0; i<topics.length; i++){
             var topicButtons = $('.topic-buttons');
             var topicButtonGen = $('<button>');
@@ -77,13 +88,35 @@ $(document).ready(function(){
             topicButtonGen.attr('data-title',topics[i])
             topicButtonGen.text(topics[i])
             topicButtons.append(topicButtonGen)
+            console.log(topics)
         }
     }
 
+    //this function starts and stops the gifs
+    function startStop(){
+        $("body").on('click', '.gif-img', function(event){
+            var gifImg = $(this);
+            var gifState = gifImg.attr('data-state');
+            var gifAnimate = gifImg.attr('data-animate');
+            var gifStill = gifImg.attr('data-still');  
+            if(gifState === 'still'){
+                gifImg.attr('src',gifAnimate);
+                gifImg.attr('data-state', 'animate');
+            } else {
+                gifImg.attr('src', gifStill);
+                gifImg.attr('data-state', 'still')
+            }
+        }) 
 
-    addItem()
-    buttonBuild()
-    retrieveGif()
+    }
+
+    function main(){
+        startStop();
+        addItem();
+        buttonBuild();
+        retrieveGif();
+    }
+    main()
 
 
     //class example

@@ -1,6 +1,25 @@
  /* img{
     display: block;
 }  */
+
+.container{
+    background-color:#ccc;
+}
+
+.topic-buttons{
+    margin-bottom: 10px;
+}
+
+.gif-holder{
+    display: inline-block;
+    margin: 0px 20px 10px 0;
+    background-color: #fff;
+}
+
+.gif-holder>p{
+    font-weight: bold;
+    padding: 10px;
+}
 .aside{
     float: right;
     
